@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Todo;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -38,16 +39,18 @@ class DemoController extends Controller
         $form = $this->createFormBuilder($todo)
             ->add('name', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'mb-2' )))
             ->add('category', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'mb-2' )))
+            ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'mb-2' )))
             ->add('priority', ChoiceType::class, array( 'choices' => array('Low' => 'Low', 'Normal' => 'Normal', 'Hard' => 'Hard'), 'attr' => array('class' => 'form-control', 'style' => 'mb-2' )))
             ->add('due_date', DateTimeType::class, array('attr' => array('class' => 'mb-3', 'style' => 'mb-3' )))
             ->add('save', SubmitType::class, array('label' => 'Create Todo','attr' => array('class' => 'btn btn-primary', 'style' => 'mt-2' )))
             ->getForm();
-
         $form->handleRequest($request);
+
         if($form->isSubmitted() && $form->isValid()) {
             // get data from Form
             $name = $form['name']->getData();
             $category = $form['category']->getData();
+            $description = $form['description']->getData();
             $priority = $form['priority']->getData();
             $due_date = $form['due_date']->getData();
             $time_now = new\DateTime('now');
@@ -55,6 +58,7 @@ class DemoController extends Controller
             // set data
             $todo->setName($name);
             $todo->setCategory($category);
+            $todo->setDescription($description);
             $todo->setPriority($priority);
             $todo->setDueDate($due_date);
             $todo->setCreateDate($time_now);
